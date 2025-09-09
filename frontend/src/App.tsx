@@ -1,13 +1,10 @@
-import {Button, Heading, Text, Card} from "@chakra-ui/react";
+import {Container} from "@chakra-ui/react";
+import Nav from "./components/Nav";
 
 export default function App() {
     return (
-        <Card.Root size="lg" variant="elevated" p="6">
-            <Card.Body>
-                <Heading mb="4">Chakra v3 ✅</Heading>
-                <Text mb="4">Card bruker slots i v3.</Text>
-                <Button colorPalette="blue">Klikk meg</Button>
-            </Card.Body>
-        </Card.Root>
+        <Container p={0} m={0}>
+            <Nav/>
+        </Container>
     );
 }
