@@ -1,5 +1,5 @@
-# config/settings_schema.py
 from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,6 +18,5 @@ class Settings(BaseSettings):
     # Django
     TIME_ZONE: str = "Europe/Oslo"
     LANGUAGE_CODE: str = "nb"
-
 
 settings = Settings()  # laster fra .env automatisk

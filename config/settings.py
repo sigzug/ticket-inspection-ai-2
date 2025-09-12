@@ -1,11 +1,10 @@
-# config/settings.py
 from pathlib import Path
+
 from .settings_schema import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = settings.SECRET_KEY
 DEBUG = settings.DEBUG
-
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 INSTALLED_APPS = [
@@ -15,11 +14,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # legg egne apps her
+    "rest_framework",
+    "corsheaders",
+    "core",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # ← flyttet opp, før CommonMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -56,9 +58,7 @@ if settings.DB_ENGINE == "sqlite":
         }
     }
 else:
-    # Bruk en full URL (dj-database-url er ikke nødvendig)
     from urllib.parse import urlparse
-
     assert settings.DATABASE_URL, "DATABASE_URL må settes for Postgres"
     parsed = urlparse(settings.DATABASE_URL)
     DATABASES = {
@@ -73,9 +73,7 @@ else:
     }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -93,3 +91,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.Argon2PasswordHasher"]
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
+}
+
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # stram til i prod (CORS_ALLOWED_ORIGINS)
