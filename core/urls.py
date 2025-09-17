@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import ComputeView, health
+from .views import UseModelView, health
 
 urlpatterns = [
     path("health/", health, name="health"),
-    path("compute/", ComputeView.as_view(), name="compute"),
+    path("use-model/", UseModelView.as_view(), name="use_model"),
 ]
