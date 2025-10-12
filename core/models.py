@@ -18,14 +18,14 @@ class Line(models.Model):
 
 class Ride(models.Model):
     line = models.ForeignKey(Line, on_delete=SET_NULL, null=True, blank=True, related_name="rides")
-    departure_time = models.DateTimeField(db_index=True, USE_TZ=True)
+    departure_time = models.DateTimeField(db_index=True)
     departure_station = models.ForeignKey(
         Station, on_delete=SET_NULL, null=True, blank=True, related_name="rides_departing"
     )
     arrival_station = models.ForeignKey(
         Station, on_delete=SET_NULL, null=True, blank=True, related_name="rides_arriving"
     )
-    full = models.BooleanField(default=False, db_index=True)
+    only_standing = models.BooleanField(default=False, db_index=True)
 
     checked = models.BooleanField(default=False, db_index=True)
     checked_after = models.ForeignKey(
