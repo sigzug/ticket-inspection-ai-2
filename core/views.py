@@ -13,7 +13,7 @@ def health(_):
 
 
 class UseModelView(APIView):
-    def get(self, request):
+    def post(self, request) -> Response:
         try:
             payload = UseModelRequest.model_validate(request.data)
         except ValidationError as e:
@@ -21,3 +21,4 @@ class UseModelView(APIView):
 
         value = run_model(payload)
         return Response(value.model_dump(), status=status.HTTP_200_OK)
+
