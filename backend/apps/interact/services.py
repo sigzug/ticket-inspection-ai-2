@@ -1,5 +1,5 @@
-from unicodedata import category
-from operator import call
+import pandas as pd
+
 from backend.server.settings import ROOT_PATH
 import pickle as pkl
 from pathlib import Path
@@ -47,13 +47,24 @@ def _get_newest_model_folder() -> Path:
     return candidates[0][1]
 
 
-def load_in_model_categories():
+def load_in_model_categories() -> dict[str, pd.Categorical]:
+    """
+    Load pickled pandas Categorical objects from the newest model's 'categories' folder.
+    Returns a dict keyed by the last path component (file name without extension).
+    """
     newest_model_folder = _get_newest_model_folder()
     categories_folder = newest_model_folder / "categories"
-    categories = []
+
+    if not categories_folder.exists() or not categories_folder.is_dir():
+        raise FileNotFoundError(f"Categories folder not found: {categories_folder}")
+
+    categories: dict[str, pd.Categorical] = {}
     for item in categories_folder.iterdir():
+        if not item.is_file():
+            continue
+        key = item.stem
         with open(item, "rb") as f:
-            categories.append(pkl.load(f))
+            categories[key] = pkl.load(f)
     return categories
 
 
