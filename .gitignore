@@ -59,7 +59,7 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
+backend/db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
@@ -123,7 +123,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+backend/.env
 .venv
 env/
 venv/
@@ -223,7 +223,7 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
+backend/db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
@@ -287,7 +287,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+backend/.env
 .venv
 env/
 venv/
@@ -326,7 +326,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-models/*
+backend/models/*
 
-training/.msal_cache.json
+backend/training/.msal_cache.json
 
