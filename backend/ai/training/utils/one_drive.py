@@ -7,7 +7,7 @@ MS_APPLICATION_ID = "ea99bfa2-4b72-444b-b68a-37876b79917c"
 AUTHORITY = "https://login.microsoftonline.com/consumers"
 SCOPES = ["User.Read", "Files.Read"]
 GRAPH = "https://graph.microsoft.com/v1.0"
-CACHE_PATH = Path("../training/.msal_cache.json")
+CACHE_PATH = Path("../.msal_cache.json")
 
 
 class OneDriveAuth:
