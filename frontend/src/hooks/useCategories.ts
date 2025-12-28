@@ -2,16 +2,6 @@ import useSWR from "swr";
 import axios from "axios";
 import type { CategoriesResponse } from "../interfaces.ts";
 
-export interface Categories {
-  only_standing: string[];
-  checked: string[];
-  wagon: string[];
-  notes: string[];
-  line: string[];
-  departure_station: string[];
-  arrival_station: string[];
-}
-
 const defaultBaseUrl = (import.meta as any)?.env?.VITE_API_BASE_URL || "http://localhost:8000";
 
 const axiosFetcher = async (url: string): Promise<CategoriesResponse> => {
