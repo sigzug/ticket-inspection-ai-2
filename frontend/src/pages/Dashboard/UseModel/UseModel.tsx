@@ -1,134 +1,185 @@
-import {useState} from "react";
+import { useState } from "react";
 import axios from "axios";
-import {Box, Button, Card, Field, Input, Stack, Text,} from "@chakra-ui/react";
+import { Box, Button, Card, Field, Input, Stack, Text, NativeSelect } from "@chakra-ui/react";
+import { useCategories } from "../../../hooks/useCategories";
 
 interface UseModelRequest {
-    line: string;
-    departure_station: string;
-    arrival_station: string;
-    only_standing: boolean;
-    departure_time: Date;
+  line: string;
+  departure_station: string;
+  arrival_station: string;
+  only_standing: boolean;
+  departure_time: Date;
 }
 
 export const UseModel = () => {
-    const [form, setForm] = useState<UseModelRequest>({
-        line: "",
-        departure_station: "",
-        arrival_station: "",
-        only_standing: false,
-        departure_time: new Date(),
-    });
-    const [response, setResponse] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState<UseModelRequest>({
+    line: "",
+    departure_station: "",
+    arrival_station: "",
+    only_standing: false,
+    departure_time: new Date(),
+  });
+  const [response, setResponse] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
-    const handleChange = (key: string, value: string) => {
-        setForm((prev) => ({...prev, [key]: value}));
-    };
+  const { categories, isLoading, isError } = useCategories();
 
-    const handleSubmit = async () => {
-        try {
-            setLoading(true);
-            setResponse(null);
+  const lineOptions = categories?.line ?? [];
+  const departureOptions = categories?.departure_station ?? [];
+  const arrivalOptions = categories?.arrival_station ?? [];
 
-            const res = await axios.post("http://localhost:8000/api/use-model/", {
-                ...form,
-                only_standing: form.only_standing,
-                departure_time: new Date(form.departure_time).toISOString(),
-            });
+  const handleChange = (key: string, value: any) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-            setResponse(res.data);
-        } catch (err: any) {
-            setResponse({error: err.message});
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      setResponse(null);
 
-    return (
-        <Card.Root maxW="sm" shadow="sm" borderWidth="md">
-            <Card.Header>
-                <Card.Title>Use the model</Card.Title>
-                <Card.Description>
-                    Fill in details about your planned trip and the model will make a prediction.
-                </Card.Description>
-            </Card.Header>
+      const res = await axios.post("http://localhost:8000/api/use-model/", {
+        ...form,
+        only_standing: form.only_standing,
+        departure_time: new Date(form.departure_time as any).toISOString(),
+      });
 
-            <Card.Body>
-                <Stack gap="4" w="full">
-                    <Field.Root>
-                        <Field.Label>Line</Field.Label>
-                        <Input
-                            value={form.line}
-                            onChange={(e) => handleChange("line", e.target.value)}
-                        />
-                    </Field.Root>
+      setResponse(res.data);
+    } catch (err: any) {
+      setResponse({ error: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                    <Field.Root>
-                        <Field.Label>Departure station</Field.Label>
-                        <Input
-                            value={form.departure_station}
-                            onChange={(e) => handleChange("departure_station", e.target.value)}
-                        />
-                    </Field.Root>
+  return (
+    <Card.Root maxW="sm" shadow="sm" borderWidth="md">
+      <Card.Header>
+        <Card.Title>Use the model</Card.Title>
+        <Card.Description>
+          Fill in details about your planned trip and the model will make a prediction.
+        </Card.Description>
+      </Card.Header>
 
-                    <Field.Root>
-                        <Field.Label>Arrival station</Field.Label>
-                        <Input
-                            value={form.arrival_station}
-                            onChange={(e) => handleChange("arrival_station", e.target.value)}
-                        />
-                    </Field.Root>
+      <Card.Body>
+        <Stack gap="4" w="full">
+          <Field.Root>
+            <Field.Label>Line</Field.Label>
+            <NativeSelect.Root
+              value={form.line}
+              onChange={(e) => handleChange("line", e.target.value)}
+              disabled={isLoading || isError || lineOptions.length === 0}
+            >
+              <NativeSelect.Field>
+                <option value="" disabled>
+                  {isLoading ? "Loading..." : "Select line"}
+                </option>
+                {lineOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
+          </Field.Root>
 
-                    <Field.Root>
-                        <Field.Label>Only standing (true/false)</Field.Label>
-                        <Input
-                            value={form.only_standing}
-                            onChange={(e) => handleChange("only_standing", e.target.value)}
-                        />
-                    </Field.Root>
+          <Field.Root>
+            <Field.Label>Departure station</Field.Label>
+            <NativeSelect.Root
+              value={form.departure_station}
+              onChange={(e) => handleChange("departure_station", e.target.value)}
+              disabled={isLoading || isError || departureOptions.length === 0}
+            >
+              <NativeSelect.Field>
+                <option value="" disabled>
+                  {isLoading ? "Loading..." : "Select departure station"}
+                </option>
+                {departureOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
+          </Field.Root>
 
-                    <Field.Root>
-                        <Field.Label>Departure time</Field.Label>
-                        <Input
-                            type="datetime-local"
-                            value={form.departure_time}
-                            onChange={(e) => handleChange("departure_time", e.target.value)}
-                        />
-                    </Field.Root>
-                </Stack>
-            </Card.Body>
+          <Field.Root>
+            <Field.Label>Arrival station</Field.Label>
+            <NativeSelect.Root
+              value={form.arrival_station}
+              onChange={(e) => handleChange("arrival_station", e.target.value)}
+              disabled={isLoading || isError || arrivalOptions.length === 0}
+            >
+              <NativeSelect.Field>
+                <option value="" disabled>
+                  {isLoading ? "Loading..." : "Select arrival station"}
+                </option>
+                {arrivalOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
+          </Field.Root>
 
-            <Card.Footer justifyContent="flex-end" gap="3">
-                <Button variant="outline" onClick={() => setForm({
-                    line: "",
-                    departure_station: "",
-                    arrival_station: "",
-                    only_standing: "",
-                    departure_time: "",
-                })}>
-                    Reset
-                </Button>
-                <Button variant="solid" onClick={handleSubmit} loading={loading}>
-                    Submit
-                </Button>
-            </Card.Footer>
+          <Field.Root>
+            <Field.Label>Only standing (true/false)</Field.Label>
+            <Input
+              value={form.only_standing as any}
+              onChange={(e) => handleChange("only_standing", e.target.value)}
+            />
+          </Field.Root>
 
-            {response && (
-                <Box borderTopWidth="1px" p="4">
-                    <Text fontWeight="bold" mb="2">
-                        Response:
-                    </Text>
-                    <Box
-                        bg="bg.muted"
-                        p="3"
-                        borderRadius="md"
-                        fontSize="sm"
-                        whiteSpace="pre-wrap"
-                    >
-                        {JSON.stringify(response, null, 2)}
-                    </Box>
-                </Box>
-            )}
-        </Card.Root>
-    );
+          <Field.Root>
+            <Field.Label>Departure time</Field.Label>
+            <Input
+              type="datetime-local"
+              value={form.departure_time as any}
+              onChange={(e) => handleChange("departure_time", e.target.value)}
+            />
+          </Field.Root>
+
+          {isError && (
+            <Box color="red.500" fontSize="sm">
+              Failed to load categories. Please try again.
+            </Box>
+          )}
+        </Stack>
+      </Card.Body>
+
+      <Card.Footer justifyContent="flex-end" gap="3">
+        <Button
+          variant="outline"
+          onClick={() =>
+            setForm({
+              line: "",
+              departure_station: "",
+              arrival_station: "",
+              only_standing: false as any,
+              departure_time: "" as any,
+            })
+          }
+        >
+          Reset
+        </Button>
+        <Button variant="solid" onClick={handleSubmit} loading={loading}>
+          Submit
+        </Button>
+      </Card.Footer>
+
+      {response && (
+        <Box borderTopWidth="1px" p="4">
+          <Text fontWeight="bold" mb="2">
+            Response:
+          </Text>
+          <Box bg="bg.muted" p="3" borderRadius="md" fontSize="sm" whiteSpace="pre-wrap">
+            {JSON.stringify(response, null, 2)}
+          </Box>
+        </Box>
+      )}
+    </Card.Root>
+  );
 };
