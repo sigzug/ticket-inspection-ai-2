@@ -1,15 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import { Box, Button, Card, Field, Input, Stack, Text, NativeSelect } from "@chakra-ui/react";
 import { useCategories } from "../../../hooks/useCategories";
-
-interface UseModelRequest {
-  line: string;
-  departure_station: string;
-  arrival_station: string;
-  only_standing: boolean;
-  departure_time: Date;
-}
+import { useRunModel } from "../../../hooks/useRunModel";
+import type { UseModelRequest } from "../../../interfaces";
 
 export const UseModel = () => {
   const [form, setForm] = useState<UseModelRequest>({
@@ -19,36 +12,40 @@ export const UseModel = () => {
     only_standing: false,
     departure_time: new Date(),
   });
-  const [response, setResponse] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
 
   const { categories, isLoading, isError } = useCategories();
+  const {
+    runModel,
+    data: response,
+    error: submitError,
+    isMutating,
+    reset: resetMutation,
+  } = useRunModel();
 
   const lineOptions = categories?.line ?? [];
   const departureOptions = categories?.departure_station ?? [];
   const arrivalOptions = categories?.arrival_station ?? [];
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: keyof UseModelRequest, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      setResponse(null);
+    await runModel({
+      ...form,
+      // departure_time is converted to ISO in the hook
+    });
+  };
 
-      const res = await axios.post("http://localhost:8000/api/use-model/", {
-        ...form,
-        only_standing: form.only_standing,
-        departure_time: new Date(form.departure_time as any).toISOString(),
-      });
-
-      setResponse(res.data);
-    } catch (err: any) {
-      setResponse({ error: err.message });
-    } finally {
-      setLoading(false);
-    }
+  const handleReset = () => {
+    setForm({
+      line: "",
+      departure_station: "",
+      arrival_station: "",
+      only_standing: false,
+      departure_time: "" as any,
+    });
+    resetMutation();
   };
 
   return (
@@ -151,32 +148,23 @@ export const UseModel = () => {
       </Card.Body>
 
       <Card.Footer justifyContent="flex-end" gap="3">
-        <Button
-          variant="outline"
-          onClick={() =>
-            setForm({
-              line: "",
-              departure_station: "",
-              arrival_station: "",
-              only_standing: false as any,
-              departure_time: "" as any,
-            })
-          }
-        >
+        <Button variant="outline" onClick={handleReset}>
           Reset
         </Button>
-        <Button variant="solid" onClick={handleSubmit} loading={loading}>
+        <Button variant="solid" onClick={handleSubmit} loading={isMutating}>
           Submit
         </Button>
       </Card.Footer>
 
-      {response && (
+      {(submitError || response) && (
         <Box borderTopWidth="1px" p="4">
           <Text fontWeight="bold" mb="2">
             Response:
           </Text>
           <Box bg="bg.muted" p="3" borderRadius="md" fontSize="sm" whiteSpace="pre-wrap">
-            {JSON.stringify(response, null, 2)}
+            {submitError
+              ? JSON.stringify({ error: (submitError as any)?.message ?? "Submit failed" }, null, 2)
+              : JSON.stringify(response, null, 2)}
           </Box>
         </Box>
       )}

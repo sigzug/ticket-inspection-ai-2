@@ -11,3 +11,7 @@ def get_categories(request: Request) -> JsonResponse:
     categories = services.load_in_model_categories()
     serialized_categories = {name: cat.categories.to_list() for name, cat in categories.items()}
     return JsonResponse({"categories": serialized_categories})
+
+
+def run_model(request: Request) -> JsonResponse:
+    return JsonResponse({"res": "yes"})
