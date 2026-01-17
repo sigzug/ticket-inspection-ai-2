@@ -311,3 +311,65 @@ class StopPlacesResponse(RootModel[list[StopPlace]]):
 
     def __len__(self):
         return len(self.root)
+
+
+class Codespace(Enum):
+    """Norwegian public transport operator codespaces"""
+    AKT = "AKT"  # Agder kollektivtrafikk
+    ATB = "ATB"  # AtB (Trøndelag)
+    ASH = "ASH"  # Arctic Sea Hotel & Apartments
+    AVI = "AVI"  # Avinor
+    BNR = "BNR"  # Bane NOR
+    BEF = "BEF"  # Beffen
+    BOR = "BOR"  # Boreal
+    BSR = "BSR"  # Bussring
+    BRA = "BRA"  # Brakar (Buskerud)
+    NYC = "NYC"  # Bygdøyfergen
+    COL = "COL"  # Color Line
+    TEL = "TEL"  # Farte (Telemark)
+    FJT = "FJT"  # Fjord Tours
+    FLI = "FLI"  # Flixbus
+    FLT = "FLT"  # Flytoget
+    FTR = "FTR"  # Flåm Travel
+    FLB = "FLB"  # Flåmsbana
+    OSC = "OSC"  # Forsvarsbygg (Oscarsborgfergen)
+    MOR = "MOR"  # Fram (Møre og Romsdal)
+    GFS = "GFS"  # Geiranger Fjordservice
+    GLO = "GLO"  # GlobeOrbit100
+    GOA = "GOA"  # Go Ahead
+    GOF = "GOF"  # Go Fjords
+    HAF = "HAF"  # Hafjell Alpinsenter
+    HAV = "HAV"  # Havila
+    HUR = "HUR"  # Hurtigruten
+    HOG = "HOG"  # Høgsfjordferja
+    INN = "INN"  # Innlandet
+    KOL = "KOL"  # Kolumbus (Rogaland)
+    SOF = "SOF"  # Kringom (Sogn og Fjordane)
+    OIS = "OIS"  # MF Øisang
+    NWY = "NWY"  # NOR-WAY Bussekspress
+    NOR = "NOR"  # Nordland fylkeskommune
+    NBU = "NBU"  # Connect Bus Flybuss
+    NIA = "NIA"  # Norsk industrianlegg
+    VIP = "VIP"  # Oslo VIP Transporttjenester
+    RUT = "RUT"  # Ruter (Oslo & Akershus)
+    SJV = "SJV"  # SJ
+    SJN = "SJN"  # SJ NORD
+    SKY = "SKY"  # Skyss (Hordaland)
+    FIN = "FIN"  # Snelandia (Finnmark)
+    STB = "STB"  # Stadbussen
+    TID = "TID"  # Tide
+    TRO = "TRO"  # Troms fylkestrafikk
+    TTS = "TTS"  # Torghatten
+    ULR = "ULR"  # Ulriken
+    UNI = "UNI"  # Unibuss
+    VOT = "VOT"  # Vestfold og Telemark
+    VIL = "VIL"  # Visit Lillehammer
+    VKT = "VKT"  # VKT (Vestfold)
+    VOG = "VOG"  # Voss Gondol
+    NSB = "NSB"  # Vy (formerly NSB)
+    GJB = "GJB"  # Vy (formerly NSB) Gjøvikbanen
+    VYG = "VYG"  # Vy-group
+    VYB = "VYB"  # Vy Buss AB
+    VYX = "VYX"  # Vy Buss AS
+    OST = "OST"  # Østfold kollektivtrafikk
+    ATU = "ATU"  # Ålesund Turvogn Service
